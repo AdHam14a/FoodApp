@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -32,7 +32,12 @@ export default function ChangePass() {
       toast.success("You've changed your password successfully");
       navigate("/login");
     } catch (error) {
-      toast.error(error.response.data.message);
+      const axiosError = error as AxiosError;
+      if (axiosError.response && axiosError.response.data) {
+        toast.error((axiosError.response.data as { message: string }).message);
+      } else {
+        toast.error("An unknown error occurred during request.");
+      }
     }
   };
   return (

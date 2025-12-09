@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -17,7 +17,7 @@ export default function Login() {
 
   const navigate = useNavigate();
 
-  const onSubmit = async (data:ILoginForm) => {
+  const onSubmit = async (data: ILoginForm) => {
     try {
       const res = await axios.post(
         "https://upskilling-egypt.com:3006/api/v1/Users/Login",
@@ -27,7 +27,12 @@ export default function Login() {
       toast.success("You've logged in suuccessfully");
       navigate("/dashboard");
     } catch (error) {
-      toast.error(error.response.data.message);
+      const axiosError = error as AxiosError;
+      if (axiosError.response && axiosError.response.data) {
+        toast.error((axiosError.response.data as { message: string }).message);
+      } else {
+        toast.error("An unknown error occurred during request.");
+      }
     }
   };
 
