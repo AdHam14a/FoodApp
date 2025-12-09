@@ -3,16 +3,21 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+interface ILoginForm {
+  email: string;
+  password: string;
+}
+
 export default function Login() {
   const {
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm();
+  } = useForm<ILoginForm>();
 
   const navigate = useNavigate();
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data:ILoginForm) => {
     try {
       const res = await axios.post(
         "https://upskilling-egypt.com:3006/api/v1/Users/Login",

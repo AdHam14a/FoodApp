@@ -3,24 +3,31 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+interface IForgotPasswordForm {
+  email: string;
+}
+
 export default function ForgetPass() {
   const {
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm();
+  } = useForm<IForgotPasswordForm>();
 
   const navigate = useNavigate();
 
-  const onSubmitHandler = async(data) => {
+  const onSubmitHandler = async (data: IForgotPasswordForm) => {
     try {
-      const res = await axios.post("https://upskilling-egypt.com:3006/api/v1/Users/Reset/Request", data);
+      const res = await axios.post(
+        "https://upskilling-egypt.com:3006/api/v1/Users/Reset/Request",
+        data
+      );
       toast.success(`${res.data.message}`);
       navigate("/change-pass");
     } catch (error) {
       toast.error(error.response.data.message);
     }
-  }
+  };
   return (
     <>
       <div className="title mt-3 mb-4">
@@ -56,8 +63,8 @@ export default function ForgetPass() {
           )}
         </div>
         <div>
-            <button className="buttons btn w-100 mt-4 mb-3">Submit</button>
-          </div>
+          <button className="buttons btn w-100 mt-4 mb-3">Submit</button>
+        </div>
       </form>
     </>
   );

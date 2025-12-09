@@ -3,19 +3,26 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+interface IResetPasswordForm {
+  email: string;
+  seed: string;
+  password: string;
+  confirmPassword: string;
+}
+
 export default function ChangePass() {
   const {
     register,
     watch,
     formState: { errors },
     handleSubmit,
-  } = useForm();
+  } = useForm<IResetPasswordForm>();
 
   const navigate = useNavigate();
 
   const pass = watch("password");
 
-  const onSubmitHandler = async (data) => {
+  const onSubmitHandler = async (data: IResetPasswordForm) => {
     try {
       const res = await axios.post(
         "https://upskilling-egypt.com:3006/api/v1/Users/Reset",

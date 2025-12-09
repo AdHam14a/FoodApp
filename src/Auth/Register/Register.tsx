@@ -1,7 +1,14 @@
-import axios from "axios";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
+
+interface IRegisterForm {
+  userName: string;
+  email: string;
+  country: string;
+  phoneNumber: number;
+  password: string;
+  confirmPassword: string;
+}
 
 export default function Register() {
   const {
@@ -9,13 +16,17 @@ export default function Register() {
     watch,
     formState: { errors },
     handleSubmit,
-  } = useForm();
-
-  const navigate = useNavigate();
+  } = useForm<IRegisterForm>();
 
   const pass = watch("password");
 
-  const onSubmit = async (data) => {};
+  const onSubmit = async (data: IRegisterForm) => {
+    try {
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <div className="title mt-3 mb-4">
