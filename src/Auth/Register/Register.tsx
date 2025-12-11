@@ -1,4 +1,5 @@
-import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { Link } from "react-router-dom";
 
 interface IRegisterForm {
@@ -11,14 +12,17 @@ interface IRegisterForm {
 }
 
 export default function Register() {
+  const [togglePass, setTogglePass] = useState(false);
+  const [toggleConfirmedPass, setToggleConfirmedPass] = useState(false);
+
   const {
     register,
-    watch,
+    control,
     formState: { errors },
     handleSubmit,
   } = useForm<IRegisterForm>();
 
-  const pass = watch("password");
+  const pass = useWatch({control,name:"password"})
 
   const onSubmit = async (data: IRegisterForm) => {
     try {
@@ -133,13 +137,23 @@ export default function Register() {
                 <i className="fa-solid fa-lock"></i>
               </span>
               <input
-                type="password"
+                type={togglePass ? "text" : "password"}
                 className="form-control"
                 placeholder="New Password"
                 {...register("password", {
                   required: "You must enter your password",
                 })}
               />
+              <span
+                className="input-group-text toggleIcon"
+                onClick={() => setTogglePass(!togglePass)}
+              >
+                {togglePass ? (
+                  <i className="fa fa-eye-slash" aria-hidden="true"></i>
+                ) : (
+                  <i className="fa fa-eye" aria-hidden="true"></i>
+                )}
+              </span>
             </div>
             {errors.password && (
               <div className="alert alert-danger p-2 mt-1">
@@ -154,7 +168,7 @@ export default function Register() {
                 <i className="fa-solid fa-mobile"></i>
               </span>
               <input
-                type="password"
+                type={toggleConfirmedPass ? "text" : "password"}
                 className="form-control"
                 placeholder="Confirm New Password"
                 {...register("confirmPassword", {
@@ -163,6 +177,16 @@ export default function Register() {
                     value === pass || "Password doesn't match",
                 })}
               />
+              <span
+                className="input-group-text toggleIcon"
+                onClick={() => setToggleConfirmedPass(!toggleConfirmedPass)}
+              >
+                {toggleConfirmedPass ? (
+                  <i className="fa fa-eye-slash" aria-hidden="true"></i>
+                ) : (
+                  <i className="fa fa-eye" aria-hidden="true"></i>
+                )}
+              </span>
             </div>
             {errors.confirmPassword && (
               <div className="alert alert-danger p-2 mt-1">

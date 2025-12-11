@@ -29,3 +29,7 @@
 .random-text{
   color: #4aa35a;
 }
+
+.toggleIcon { 
+  cursor: pointer;
+}

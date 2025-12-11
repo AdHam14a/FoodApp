@@ -1,4 +1,5 @@
 import axios, { AxiosError } from "axios";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -9,6 +10,8 @@ interface ILoginForm {
 }
 
 export default function Login() {
+  const [toggle, setToggle] = useState(false);
+
   const {
     register,
     formState: { errors },
@@ -71,7 +74,7 @@ export default function Login() {
               <i className="fa-solid fa-lock"></i>{" "}
             </span>
             <input
-              type="password"
+              type={toggle ? "text" : "password"}
               className="form-control"
               placeholder="Password"
               aria-label="password"
@@ -80,6 +83,13 @@ export default function Login() {
                 required: "You must enter your password",
               })}
             />
+            <span className="input-group-text toggleIcon" onClick={()=>setToggle(!toggle)}>
+              {toggle ? (
+                <i className="fa fa-eye-slash" aria-hidden="true"></i>
+              ) : (
+                <i className="fa fa-eye" aria-hidden="true"></i>
+              )}
+            </span>
           </div>
           {errors.password && (
             <div className="alert alert-danger p-2">

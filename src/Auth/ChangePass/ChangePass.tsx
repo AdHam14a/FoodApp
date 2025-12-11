@@ -1,5 +1,6 @@
 import axios, { AxiosError } from "axios";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -11,16 +12,19 @@ interface IResetPasswordForm {
 }
 
 export default function ChangePass() {
+  const [togglePass, setTogglePass] = useState(false);
+  const [toggleConfirmedPass, setToggleConfirmedPass] = useState(false);
+
   const {
     register,
-    watch,
+    control,
     formState: { errors },
     handleSubmit,
   } = useForm<IResetPasswordForm>();
 
   const navigate = useNavigate();
 
-  const pass = watch("password");
+  const pass = useWatch({ control, name: "password" });
 
   const onSubmitHandler = async (data: IResetPasswordForm) => {
     try {
@@ -94,7 +98,7 @@ export default function ChangePass() {
             <i className="fa-solid fa-lock"></i>{" "}
           </span>
           <input
-            type="password"
+            type={togglePass ? "text" : "password"}
             className="form-control"
             placeholder="New Password"
             aria-label="password"
@@ -103,6 +107,16 @@ export default function ChangePass() {
               required: "You must enter your password",
             })}
           />
+          <span
+            className="input-group-text toggleIcon"
+            onClick={() => setTogglePass(!togglePass)}
+          >
+            {togglePass ? (
+              <i className="fa fa-eye-slash" aria-hidden="true"></i>
+            ) : (
+              <i className="fa fa-eye" aria-hidden="true"></i>
+            )}
+          </span>
         </div>
         {errors.password && (
           <div className="alert alert-danger p-2">
@@ -114,7 +128,7 @@ export default function ChangePass() {
             <i className="fa-solid fa-lock"></i>{" "}
           </span>
           <input
-            type="password"
+            type={toggleConfirmedPass ? "text" : "password"}
             className="form-control"
             placeholder="Confirm New Password"
             aria-label="password"
@@ -124,6 +138,16 @@ export default function ChangePass() {
               validate: (value) => value === pass || "Password doesn't match",
             })}
           />
+          <span
+            className="input-group-text toggleIcon"
+            onClick={() => setToggleConfirmedPass(!toggleConfirmedPass)}
+          >
+            {toggleConfirmedPass ? (
+              <i className="fa fa-eye-slash" aria-hidden="true"></i>
+            ) : (
+              <i className="fa fa-eye" aria-hidden="true"></i>
+            )}
+          </span>
         </div>
         {errors.confirmPassword && (
           <div className="alert alert-danger p-2">
