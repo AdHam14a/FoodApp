@@ -1,4 +1,10 @@
-export default function Header({ title, description, imageURL }) {
+interface IHeader {
+  title: string;
+  description: string;
+  imageURL: string;
+}
+
+export default function Header({ title, description, imageURL }:IHeader) {
   return (
     <>
       <header className="py-1 m-2">
@@ -8,11 +14,7 @@ export default function Header({ title, description, imageURL }) {
             <p>{description}</p>
           </div>
           <div className="w-75 text-end">
-            <img
-              src={imageURL}
-              alt="Header Image"
-              className="image-header"
-            />
+            <img src={imageURL} alt="Header Image" className="image-header" />
           </div>
         </div>
       </header>
