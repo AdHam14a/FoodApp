@@ -26,7 +26,7 @@ export default function Login() {
         "https://upskilling-egypt.com:3006/api/v1/Users/Login",
         data
       );
-      console.log(res);
+      localStorage.setItem("token", res.data.token);
       toast.success("You've logged in suuccessfully");
       navigate("/dashboard");
     } catch (error) {
@@ -83,7 +83,10 @@ export default function Login() {
                 required: "You must enter your password",
               })}
             />
-            <span className="input-group-text toggleIcon" onClick={()=>setToggle(!toggle)}>
+            <span
+              className="input-group-text toggleIcon"
+              onClick={() => setToggle(!toggle)}
+            >
               {toggle ? (
                 <i className="fa fa-eye-slash" aria-hidden="true"></i>
               ) : (

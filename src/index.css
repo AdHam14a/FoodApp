@@ -1,5 +1,5 @@
-*{
-  font-family: 'Inter', sans-serif;
+* {
+  font-family: "Inter", sans-serif;
 }
 
 .auth-container {
@@ -21,15 +21,40 @@
   font-weight: bold;
 }
 
-.buttons:hover{
+.buttons:hover {
   background-color: #174b21;
   color: #ffffff;
 }
 
-.random-text{
+.random-text {
   color: #4aa35a;
 }
 
-.toggleIcon { 
+.toggleIcon,
+.user-data,
+.bell-notifications,
+.sidebar-logo {
   cursor: pointer;
+}
+
+.user-data:hover {
+  background-color: rgb(224, 224, 224);
+  border-radius: 18px;
+}
+
+.header-container {
+  background-image: url("assets/bg-header.png");
+  background-size: cover;
+}
+
+.sidebar-container .ps-sidebar-container {
+  background-color: #1f263e;
+  color: #ffffff;
+  border-top-right-radius: 40px;
+  height: 100vh;
+}
+
+.sidebar-container .ps-menu-button:hover {
+  background-color: rgba(0, 146, 77, 0.1) !important;
+  border-left: 3px solid rgba(0, 146, 71, 1);
 }

@@ -1,15 +1,15 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
-import Sidebar from "../Sidebar/Sidebar";
+import SideBar from "../SideBar/Sidebar";
 
 export default function MasterLayout() {
   return (
     <>
-      <div>
+      <div className="d-flex">
         <div>
-          <Sidebar />
+          <SideBar />
         </div>
-        <div>
+        <div className="w-100">
           <Navbar />
           <Outlet />
         </div>
