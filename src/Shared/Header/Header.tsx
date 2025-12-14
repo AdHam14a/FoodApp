@@ -1,14 +1,18 @@
 export default function Header({ title, description, imageURL }) {
   return (
     <>
-      <header className="py-2 m-3">
+      <header className="py-1 m-2">
         <div className="header-container container-fluid rounded-4 p-5 d-flex">
-          <div className="d-flex flex-column justify-content-center text-white flex-grow-1">
+          <div className="d-flex flex-column justify-content-center text-white ">
             <h2>{title}</h2>
             <p>{description}</p>
           </div>
           <div className="w-75 text-end">
-            <img src={imageURL} alt="Header Image" />
+            <img
+              src={imageURL}
+              alt="Header Image"
+              className="image-header"
+            />
           </div>
         </div>
       </header>

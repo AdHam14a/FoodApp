@@ -1,7 +1,36 @@
+import axios from "axios";
 import Header from "../../../Shared/Header/Header";
-import headerImage from "../../../assets/header2.png"
+import headerImage from "../../../assets/header2.png";
+import { useEffect, useState } from "react";
+
+interface ICategory {
+  id: number;
+  name: string;
+  creationDate: string;
+}
 
 export default function CategoriesList() {
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const res = await axios.get(
+          "https://upskilling-egypt.com:3006/api/v1/Category/?pageSize=10&pageNumber=1",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        console.log(res.data.data);
+        setCategories(res.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getCategories();
+  }, []);
   return (
     <>
       <Header
@@ -11,7 +40,24 @@ export default function CategoriesList() {
         }
         imageURL={headerImage}
       />
-      <div>CategoriesList</div>
+      <table className="table">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Creation Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {categories.map((category:ICategory) => (
+            <tr key={category.id}>
+              <th scope="row">{category.id}</th>
+              <td>{category.name}</td>
+              <td>{category.creationDate}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </>
   );
 }

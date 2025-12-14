@@ -5,7 +5,7 @@ import bellNotifications from "../../assets/Bell-Notifications.png";
 export default function Navbar() {
   return (
     <>
-      <nav className="navbar navbar-expand-lg bg-body-tertiary py-2 m-3 rounded-4">
+      <nav className="navbar navbar-expand-lg bg-body-tertiary py-1 m-2 rounded-4">
         <div className="container-fluid d-flex justify-content-end ">
           <div className="d-flex gap-4 align-items-center px-2 user-data">
             <div className="d-flex  gap-2 align-items-center">

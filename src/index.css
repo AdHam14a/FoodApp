@@ -58,3 +58,10 @@
   background-color: rgba(0, 146, 77, 0.1) !important;
   border-left: 3px solid rgba(0, 146, 71, 1);
 }
+
+@media (max-width: 767.98px) {
+  .image-header{
+    width: 21vw;
+  }
+}
+
