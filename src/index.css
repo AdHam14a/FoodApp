@@ -33,7 +33,8 @@
 .toggleIcon,
 .user-data,
 .bell-notifications,
-.sidebar-logo {
+.sidebar-logo,
+.options-icon {
   cursor: pointer;
 }
 

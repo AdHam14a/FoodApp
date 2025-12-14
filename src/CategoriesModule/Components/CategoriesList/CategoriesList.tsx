@@ -2,6 +2,7 @@ import axios from "axios";
 import Header from "../../../Shared/Header/Header";
 import headerImage from "../../../assets/header2.png";
 import { useEffect, useState } from "react";
+import Loading from "../../../Shared/Loading/Loading";
 
 interface ICategory {
   id: number;
@@ -11,10 +12,12 @@ interface ICategory {
 
 export default function CategoriesList() {
   const [categories, setCategories] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const getCategories = async () => {
       try {
+        setIsLoading(true);
         const res = await axios.get(
           "https://upskilling-egypt.com:3006/api/v1/Category/?pageSize=10&pageNumber=1",
           {
@@ -25,8 +28,10 @@ export default function CategoriesList() {
         );
         console.log(res.data.data);
         setCategories(res.data.data);
+        setIsLoading(false);
       } catch (error) {
         console.log(error);
+        setIsLoading(false);
       }
     };
     getCategories();
@@ -46,16 +51,28 @@ export default function CategoriesList() {
             <th scope="col">ID</th>
             <th scope="col">Name</th>
             <th scope="col">Creation Date</th>
+            <th scope="col">Options</th>
           </tr>
         </thead>
         <tbody>
-          {categories.map((category:ICategory) => (
-            <tr key={category.id}>
-              <th scope="row">{category.id}</th>
-              <td>{category.name}</td>
-              <td>{category.creationDate}</td>
+          {isLoading ? (
+            <tr>
+              <td colSpan={5} className="text-center">
+                <Loading />
+              </td>
             </tr>
-          ))}
+          ) : (
+            categories.map((category: ICategory) => (
+              <tr key={category.id}>
+                <th scope="row">{category.id}</th>
+                <td>{category.name}</td>
+                <td>{category.creationDate}</td>
+                <td>
+                  <i className="fa-solid fa-ellipsis options-icon"></i>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
     </>
