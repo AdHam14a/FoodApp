@@ -48,6 +48,13 @@
   background-size: cover;
 }
 
+.sidebar-container {
+  flex-grow: 1;
+  flex-shrink: 0;
+  height: 100%;
+  overflow-y: auto;
+}
+
 .sidebar-container .ps-sidebar-container {
   background-color: #1f263e;
   color: #ffffff;
@@ -61,8 +68,14 @@
 }
 
 @media (max-width: 767.98px) {
-  .image-header{
+  .image-header {
     width: 21vw;
   }
 }
 
+.table-image {
+  width: 5vw;
+  height: auto;
+  object-fit: cover;
+  border-radius: 50%;
+}
