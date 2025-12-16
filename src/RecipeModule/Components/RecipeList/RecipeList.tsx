@@ -9,11 +9,14 @@ interface IRecipe {
   name: string;
   creationDate: string;
   price: number;
+  imagePath: string;
 }
 
 export default function RecipeList() {
   const [recipes, setRecipes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const baseURL = "https://upskilling-egypt.com:3006/";
 
   useEffect(() => {
     const getRecipes = async () => {
@@ -53,15 +56,16 @@ export default function RecipeList() {
             <th scope="col">Name</th>
             <th scope="col">Creation Date</th>
             <th scope="col">Price</th>
+            <th scope="col">Image</th>
             <th scope="col">Options</th>
           </tr>
         </thead>
         <tbody>
           {isLoading ? (
             <tr>
-                <td colSpan={5} className="text-center">
-                    <Loading />
-                </td>
+              <td colSpan={5} className="text-center">
+                <Loading />
+              </td>
             </tr>
           ) : (
             recipes.map((recipe: IRecipe) => (
@@ -70,6 +74,13 @@ export default function RecipeList() {
                 <td>{recipe.name}</td>
                 <td>{recipe.creationDate}</td>
                 <td>{recipe.price}</td>
+                <td>
+                  <img
+                    src={`${baseURL}${recipe.imagePath}`}
+                    alt="image"
+                    className="table-image"
+                  />
+                </td>
                 <td>
                   <i className="fa-solid fa-ellipsis options-icon"></i>
                 </td>
