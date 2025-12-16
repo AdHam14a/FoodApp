@@ -9,7 +9,7 @@ import logout from "../../assets/logout.png";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-export default function SideBar() {
+export default function MainSideBar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const toggle = () => {
     setIsCollapsed(!isCollapsed);
