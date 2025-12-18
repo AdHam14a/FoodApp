@@ -3,6 +3,7 @@ import Header from "../../../Shared/Header/Header";
 import headerImage from "../../../assets/header2.png";
 import { useEffect, useState } from "react";
 import Loading from "../../../Shared/Loading/Loading";
+import NoData from "../../../Shared/NoData/NoData";
 
 interface ICategory {
   id: number;
@@ -61,7 +62,7 @@ export default function CategoriesList() {
                 <Loading />
               </td>
             </tr>
-          ) : (
+          ) : categories.length > 0 ? (
             categories.map((category: ICategory) => (
               <tr key={category.id}>
                 <th scope="row">{category.id}</th>
@@ -72,6 +73,12 @@ export default function CategoriesList() {
                 </td>
               </tr>
             ))
+          ) : (
+            <tr>
+              <td colSpan={5} className="text-center">
+                <NoData />
+              </td>
+            </tr>
           )}
         </tbody>
       </table>

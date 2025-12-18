@@ -3,6 +3,7 @@ import Header from "../../../Shared/Header/Header";
 import headerImage from "../../../assets/header2.png";
 import axios from "axios";
 import Loading from "../../../Shared/Loading/Loading";
+import NoData from "../../../Shared/NoData/NoData";
 
 interface IRecipe {
   id: number;
@@ -67,7 +68,7 @@ export default function RecipeList() {
                 <Loading />
               </td>
             </tr>
-          ) : (
+          ) : recipes.length > 0 ? (
             recipes.map((recipe: IRecipe) => (
               <tr key={recipe.id}>
                 <th scope="row">{recipe.id}</th>
@@ -86,6 +87,12 @@ export default function RecipeList() {
                 </td>
               </tr>
             ))
+          ) : (
+            <tr>
+              <td colSpan={6} className="text-center">
+                <NoData />
+              </td>
+            </tr>
           )}
         </tbody>
       </table>
