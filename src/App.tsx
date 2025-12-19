@@ -15,6 +15,7 @@ import CategoriesList from "./CategoriesModule/Components/CategoriesList/Categor
 import CategoryData from "./CategoriesModule/Components/CategoryData/CategoryData";
 import UsersList from "./UsersModule/Components/UsersList/UsersList";
 import { ToastContainer } from "react-toastify";
+import ProtectedRoute from "./Shared/ProtectedRoute/ProtectedRoute";
 
 function App() {
   const routes = createBrowserRouter([
@@ -51,22 +52,30 @@ function App() {
     },
     {
       path: "dashboard",
-      element: <MasterLayout />,
+      element: (
+        <ProtectedRoute>
+          <MasterLayout />
+        </ProtectedRoute>
+      ),
       errorElement: <NotFound />,
       children: [
         { index: true, element: <Dashboard /> },
         { path: "recipes", element: <RecipeList /> },
         { path: "recipes-data", element: <RecipeData /> },
         { path: "categories", element: <CategoriesList /> },
-        { path: "categories-data", element: <CategoryData  /> },
-        { path: "users", element: <UsersList  /> },
+        { path: "categories-data", element: <CategoryData /> },
+        { path: "users", element: <UsersList /> },
       ],
     },
   ]);
   return (
     <>
       <RouterProvider router={routes}></RouterProvider>
-      <ToastContainer position="top-center" autoClose={4000} closeOnClick={true} />
+      <ToastContainer
+        position="top-center"
+        autoClose={4000}
+        closeOnClick={true}
+      />
     </>
   );
 }

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import Header from "../../../Shared/Header/Header";
 import headerImage from "../../../assets/header2.png";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import Loading from "../../../Shared/Loading/Loading";
 import NoData from "../../../Shared/NoData/NoData";
+import { toast } from "react-toastify";
+import Confirmation from "../../../Shared/Confirmation/Confirmation";
 
 interface IRecipe {
   id: number;
@@ -16,8 +18,41 @@ interface IRecipe {
 export default function RecipeList() {
   const [recipes, setRecipes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+  const [show, setShow] = useState(false);
+  const [Id, setId] = useState<number | null>(null);
 
   const baseURL = "https://upskilling-egypt.com:3006/";
+
+  const handleOpenModal = (id: number) => {
+    setId(id);
+    setShow(true);
+  };
+
+  const confirmDelete = async (id: number) => {
+    try {
+      await axios.delete(
+        `https://upskilling-egypt.com:3006/api/v1/Recipe/${id}`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+      toast.success("Deleted Successfully");
+      setRecipes((prev) => prev.filter((rec: IRecipe) => rec.id !== id));
+      setShow(false);
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response && axiosError.response.data) {
+        toast.error((axiosError.response.data as { message: string }).message);
+      } else {
+        toast.error("An unknown error occurred during request.");
+      }
+    }
+  };
+
+  const toggleMenu = (id: number) => {
+    setOpenMenuId((prev) => (prev === id ? null : id));
+  };
 
   useEffect(() => {
     const getRecipes = async () => {
@@ -49,6 +84,12 @@ export default function RecipeList() {
           "You can now add your items that any user can order it from the Application and you can edit"
         }
         imageURL={headerImage}
+      />
+      <Confirmation
+        show={show}
+        handleClose={() => setShow(false)}
+        deleteAction={() => confirmDelete(Id!)}
+        title="Recipe"
       />
       <table className="table">
         <thead>
@@ -82,8 +123,22 @@ export default function RecipeList() {
                     className="table-image"
                   />
                 </td>
-                <td>
-                  <i className="fa-solid fa-ellipsis options-icon"></i>
+                <td className="position-relative">
+                  <i
+                    className="fa-solid fa-ellipsis options-icon"
+                    onClick={() => toggleMenu(recipe.id)}
+                  ></i>
+                  {openMenuId === recipe.id && (
+                    <ul className="options-menu">
+                      <li>View</li>
+                      <li
+                        className="delete"
+                        onClick={() => handleOpenModal(recipe.id)}
+                      >
+                        Delete
+                      </li>
+                    </ul>
+                  )}
                 </td>
               </tr>
             ))

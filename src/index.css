@@ -79,3 +79,45 @@
   object-fit: cover;
   border-radius: 50%;
 }
+
+
+.options-menu {
+  position: absolute;
+  top: 30px;
+  right: 100px;
+  background: white;
+  border: 1px solid wheat;
+  list-style: none;
+  padding: 5px 0;
+  margin: 0;
+  width: 120px;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+}
+
+.options-menu li {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.options-menu li:hover {
+  background-color: #f1f1f1;
+}
+
+.options-menu .delete {
+  color: red;
+}
+
+.modal-header .btn-close {
+    border: 2px solid red;
+    color: red;
+    border-radius: 50%;       
+    opacity: 1;               
+    padding: 10px;
+    transition: transform 0.2s;
+}
+
+.modal-header .btn-close:hover {
+    transform: scale(1.1);
+}

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useAuth } from "../../Context/AuthContext";
 
 interface ILoginForm {
   email: string;
@@ -11,6 +12,8 @@ interface ILoginForm {
 
 export default function Login() {
   const [toggle, setToggle] = useState(false);
+
+  const { login } = useAuth();
 
   const {
     register,
@@ -26,8 +29,8 @@ export default function Login() {
         "https://upskilling-egypt.com:3006/api/v1/Users/Login",
         data
       );
-      localStorage.setItem("token", res.data.token);
-      toast.success("You've logged in suuccessfully");
+      login(res.data.token);
+      toast.success("You've logged in successfully");
       navigate("/dashboard");
     } catch (error) {
       const axiosError = error as AxiosError;
