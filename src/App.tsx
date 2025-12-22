@@ -12,7 +12,7 @@ import Dashboard from "./Dashboard/Dashboard";
 import RecipeList from "./RecipeModule/Components/RecipeList/RecipeList";
 import RecipeData from "./RecipeModule/Components/RecipeData/RecipeData";
 import CategoriesList from "./CategoriesModule/Components/CategoriesList/CategoriesList";
-import CategoryData from "./CategoriesModule/Components/CategoryData/CategoryData";
+
 import UsersList from "./UsersModule/Components/UsersList/UsersList";
 import { ToastContainer } from "react-toastify";
 import ProtectedRoute from "./Shared/ProtectedRoute/ProtectedRoute";
@@ -63,7 +63,6 @@ function App() {
         { path: "recipes", element: <RecipeList /> },
         { path: "recipes-data", element: <RecipeData /> },
         { path: "categories", element: <CategoriesList /> },
-        { path: "categories-data", element: <CategoryData /> },
         { path: "users", element: <UsersList /> },
       ],
     },

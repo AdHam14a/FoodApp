@@ -5,7 +5,9 @@ import { useEffect, useState } from "react";
 import Loading from "../../../Shared/Loading/Loading";
 import NoData from "../../../Shared/NoData/NoData";
 import Confirmation from "../../../Shared/Confirmation/Confirmation";
+import CategoryData from "../CategoryData/CategoryData";
 import { toast } from "react-toastify";
+import Pagination from "../../../Shared/Pagination/Pagination";
 
 interface ICategory {
   id: number;
@@ -19,6 +21,10 @@ export default function CategoriesList() {
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
   const [show, setShow] = useState(false);
   const [Id, setId] = useState<number | null>(null);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const pageSize = 10;
 
   const handleOpenModal = (id: number) => {
     setId(id);
@@ -50,27 +56,38 @@ export default function CategoriesList() {
     setOpenMenuId((prev) => (prev === id ? null : id));
   };
 
-  useEffect(() => {
-    const getCategories = async () => {
-      try {
-        setIsLoading(true);
-        const res = await axios.get(
-          "https://upskilling-egypt.com:3006/api/v1/Category/?pageSize=10&pageNumber=1",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        setCategories(res.data.data);
-        setIsLoading(false);
-      } catch (error) {
-        console.log(error);
-        setIsLoading(false);
+  const getCategories = async (pageNumber: number = currentPage) => {
+    try {
+      setIsLoading(true);
+      const res = await axios.get(
+        `https://upskilling-egypt.com:3006/api/v1/Category/?pageSize=${pageSize}&pageNumber=${pageNumber}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setCategories(res.data.data);
+      // Assuming the API returns pagination info
+      if (res.data.totalNumberOfPages) {
+        setTotalPages(res.data.totalNumberOfPages);
+      } else if (res.data.pagination) {
+        setTotalPages(res.data.pagination.totalNumberOfPages || 1);
       }
-    };
-    getCategories();
-  }, []);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getCategories(currentPage);
+  }, [currentPage]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   return (
     <>
@@ -87,6 +104,25 @@ export default function CategoriesList() {
         deleteAction={() => confirmDelete(Id!)}
         title="Category"
       />
+      <CategoryData
+        show={showAddModal}
+        handleClose={() => setShowAddModal(false)}
+        refreshList={getCategories}
+      />
+      <div className="py-1 m-2 dash-container rounded-4 d-flex justify-content-between align-items-center">
+        <div className="p-5">
+          <h4>Categories Table Details</h4>
+          <p>You can check all details</p>
+        </div>
+        <div className="p-5">
+          <button
+            className="btn btn-success px-5"
+            onClick={() => setShowAddModal(true)}
+          >
+            Add new Item
+          </button>
+        </div>
+      </div>
       <table className="table">
         <thead>
           <tr>
@@ -137,6 +173,13 @@ export default function CategoriesList() {
           )}
         </tbody>
       </table>
+      {!isLoading && categories.length > 0 && totalPages > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      )}
     </>
   );
 }

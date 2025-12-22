@@ -6,21 +6,40 @@ import Loading from "../../../Shared/Loading/Loading";
 import NoData from "../../../Shared/NoData/NoData";
 import { toast } from "react-toastify";
 import Confirmation from "../../../Shared/Confirmation/Confirmation";
+import { useNavigate } from "react-router-dom";
+import Pagination from "../../../Shared/Pagination/Pagination";
+
+interface ICategory {
+  id: number;
+  name: string;
+}
+
+interface ITag {
+  id: number;
+  name: string;
+}
 
 interface IRecipe {
   id: number;
   name: string;
-  creationDate: string;
+  description: string;
   price: number;
   imagePath: string;
+  tag: ITag;
+  category: ICategory[];
 }
 
 export default function RecipeList() {
-  const [recipes, setRecipes] = useState([]);
+  const [recipes, setRecipes] = useState<IRecipe[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
   const [show, setShow] = useState(false);
   const [Id, setId] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const pageSize = 10;
+
+  const navigate = useNavigate();
 
   const baseURL = "https://upskilling-egypt.com:3006/";
 
@@ -38,6 +57,7 @@ export default function RecipeList() {
         }
       );
       toast.success("Deleted Successfully");
+      console.log(recipes);
       setRecipes((prev) => prev.filter((rec: IRecipe) => rec.id !== id));
       setShow(false);
     } catch (error) {
@@ -55,11 +75,11 @@ export default function RecipeList() {
   };
 
   useEffect(() => {
-    const getRecipes = async () => {
+    const getRecipes = async (pageNumber: number = currentPage) => {
       try {
         setIsLoading(true);
         const res = await axios.get(
-          "https://upskilling-egypt.com:3006/api/v1/Recipe/?pageSize=10&pageNumber=1",
+          `https://upskilling-egypt.com:3006/api/v1/Recipe/?pageSize=${pageSize}&pageNumber=${pageNumber}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -68,14 +88,23 @@ export default function RecipeList() {
         );
         console.log(res.data.data);
         setRecipes(res.data.data);
+        if (res.data.totalNumberOfPages) {
+          setTotalPages(res.data.totalNumberOfPages);
+        } else if (res.data.pagination) {
+          setTotalPages(res.data.pagination.totalNumberOfPages || 1);
+        }
         setIsLoading(false);
       } catch (error) {
         console.log(error);
         setIsLoading(false);
       }
     };
-    getRecipes();
-  }, []);
+    getRecipes(currentPage);
+  }, [currentPage]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
   return (
     <>
       <Header
@@ -91,15 +120,30 @@ export default function RecipeList() {
         deleteAction={() => confirmDelete(Id!)}
         title="Recipe"
       />
+      <div className="py-1 m-2 dash-container rounded-4 d-flex justify-content-between align-items-center">
+        <div className="p-5">
+          <h4>Recipe Table Details</h4>
+          <p>You can check all details</p>
+        </div>
+        <div className="p-5">
+          <button
+            className="btn btn-success px-5"
+            onClick={() => navigate("/dashboard/recipes-data")}
+          >
+            Add new Item
+          </button>
+        </div>
+      </div>
       <table className="table">
         <thead>
           <tr>
-            <th scope="col">ID</th>
             <th scope="col">Name</th>
-            <th scope="col">Creation Date</th>
-            <th scope="col">Price</th>
             <th scope="col">Image</th>
-            <th scope="col">Options</th>
+            <th scope="col">Price</th>
+            <th scope="col">Description</th>
+            <th scope="col">tag</th>
+            <th scope="col">category</th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
@@ -112,10 +156,7 @@ export default function RecipeList() {
           ) : recipes.length > 0 ? (
             recipes.map((recipe: IRecipe) => (
               <tr key={recipe.id}>
-                <th scope="row">{recipe.id}</th>
-                <td>{recipe.name}</td>
-                <td>{recipe.creationDate}</td>
-                <td>{recipe.price}</td>
+                <th scope="row">{recipe.name}</th>
                 <td>
                   <img
                     src={`${baseURL}${recipe.imagePath}`}
@@ -123,6 +164,11 @@ export default function RecipeList() {
                     className="table-image"
                   />
                 </td>
+                <td>{recipe.price}</td>
+                <td>{recipe.description}</td>
+                <td>{recipe.tag?.name}</td>
+                <td>{recipe.category?.map((cat) => cat.name).join(", ")}</td>
+
                 <td className="position-relative">
                   <i
                     className="fa-solid fa-ellipsis options-icon"
@@ -151,6 +197,13 @@ export default function RecipeList() {
           )}
         </tbody>
       </table>
+      {!isLoading && recipes.length > 0 && totalPages > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      )}
     </>
   );
 }
