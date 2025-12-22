@@ -7,7 +7,6 @@ import Loading from "../../../Shared/Loading/Loading";
 import NoData from "../../../Shared/NoData/NoData";
 import { toast } from "react-toastify";
 import Confirmation from "../../../Shared/Confirmation/Confirmation";
-import UserData from "../UserData/UserData";
 import Pagination from "../../../Shared/Pagination/Pagination";
 
 interface IRole {
@@ -32,7 +31,6 @@ export default function UsersList() {
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
   const [show, setShow] = useState(false);
   const [Id, setId] = useState<number | null>(null);
-  const [showAddModal, setShowAddModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const pageSize = 10;
@@ -118,23 +116,10 @@ export default function UsersList() {
         deleteAction={() => confirmDelete(Id!)}
         title="User"
       />
-      <UserData
-        show={showAddModal}
-        handleClose={() => setShowAddModal(false)}
-        refreshList={getUsers}
-      />
       <div className="py-1 m-2 dash-container rounded-4 d-flex justify-content-between align-items-center">
         <div className="p-5">
           <h4>Users Table Details</h4>
           <p>You can check all details</p>
-        </div>
-        <div className="p-5">
-          <button
-            className="btn btn-success px-5"
-            onClick={() => setShowAddModal(true)}
-          >
-            Add new Item
-          </button>
         </div>
       </div>
       <table className="table">

@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 import Header from "../../../Shared/Header/Header";
 import headerImage from "../../../assets/header2.png";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Loading from "../../../Shared/Loading/Loading";
 import NoData from "../../../Shared/NoData/NoData";
 import Confirmation from "../../../Shared/Confirmation/Confirmation";
@@ -56,34 +56,37 @@ export default function CategoriesList() {
     setOpenMenuId((prev) => (prev === id ? null : id));
   };
 
-  const getCategories = async (pageNumber: number = currentPage) => {
-    try {
-      setIsLoading(true);
-      const res = await axios.get(
-        `https://upskilling-egypt.com:3006/api/v1/Category/?pageSize=${pageSize}&pageNumber=${pageNumber}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      setCategories(res.data.data);
-      // Assuming the API returns pagination info
-      if (res.data.totalNumberOfPages) {
-        setTotalPages(res.data.totalNumberOfPages);
-      } else if (res.data.pagination) {
-        setTotalPages(res.data.pagination.totalNumberOfPages || 1);
+  const getCategories = useCallback(
+    async (pageNumber: number = currentPage) => {
+      try {
+        setIsLoading(true);
+        const res = await axios.get(
+          `https://upskilling-egypt.com:3006/api/v1/Category/?pageSize=${pageSize}&pageNumber=${pageNumber}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        setCategories(res.data.data);
+        setTotalPages(
+          res.data.totalNumberOfPages ||
+            res.data.pagination?.totalNumberOfPages ||
+            1
+        );
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to load categories");
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
-    } catch (error) {
-      console.log(error);
-      setIsLoading(false);
-    }
-  };
+    },
+    [currentPage]
+  );
 
   useEffect(() => {
     getCategories(currentPage);
-  }, [currentPage]);
+  }, [getCategories, currentPage]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -129,7 +132,7 @@ export default function CategoriesList() {
             <th scope="col">ID</th>
             <th scope="col">Name</th>
             <th scope="col">Creation Date</th>
-            <th scope="col">Category</th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
