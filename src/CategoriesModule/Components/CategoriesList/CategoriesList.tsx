@@ -8,6 +8,7 @@ import Confirmation from "../../../Shared/Confirmation/Confirmation";
 import CategoryData from "../CategoryData/CategoryData";
 import { toast } from "react-toastify";
 import Pagination from "../../../Shared/Pagination/Pagination";
+import { useAuth } from "../../../Context/AuthContext";
 
 interface ICategory {
   id: number;
@@ -24,6 +25,7 @@ export default function CategoriesList() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const { userData } = useAuth();
   const pageSize = 10;
 
   const handleOpenModal = (id: number) => {
@@ -117,14 +119,18 @@ export default function CategoriesList() {
           <h4>Categories Table Details</h4>
           <p>You can check all details</p>
         </div>
-        <div className="p-5">
-          <button
-            className="btn btn-success px-5"
-            onClick={() => setShowAddModal(true)}
-          >
-            Add new Item
-          </button>
-        </div>
+        {userData?.userGroup !== "SystemUser" ? (
+          <div className="p-5">
+            <button
+              className="btn btn-success px-5"
+              onClick={() => setShowAddModal(true)}
+            >
+              Add new Item
+            </button>
+          </div>
+        ) : (
+          ""
+        )}
       </div>
       <table className="table">
         <thead>
@@ -132,7 +138,7 @@ export default function CategoriesList() {
             <th scope="col">ID</th>
             <th scope="col">Name</th>
             <th scope="col">Creation Date</th>
-            <th scope="col"></th>
+            <th scope="col">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -149,20 +155,26 @@ export default function CategoriesList() {
                 <td>{category.name}</td>
                 <td>{category.creationDate}</td>
                 <td className="position-relative">
-                  <i
-                    className="fa-solid fa-ellipsis options-icon"
-                    onClick={() => toggleMenu(category.id)}
-                  ></i>
-                  {openMenuId === category.id && (
-                    <ul className="options-menu">
-                      <li>View</li>
-                      <li
-                        className="delete"
-                        onClick={() => handleOpenModal(category.id)}
-                      >
-                        Delete
-                      </li>
-                    </ul>
+                  {userData?.userGroup !== "SystemUser" ? (
+                    <>
+                      <i
+                        className="fa-solid fa-ellipsis options-icon"
+                        onClick={() => toggleMenu(category.id)}
+                      ></i>
+                      {openMenuId === category.id && (
+                        <ul className="options-menu">
+                          <li>View</li>
+                          <li
+                            className="delete"
+                            onClick={() => handleOpenModal(category.id)}
+                          >
+                            Delete
+                          </li>
+                        </ul>
+                      )}
+                    </>
+                  ) : (
+                    <i className="fa fa-heart" aria-hidden="true"></i>
                   )}
                 </td>
               </tr>

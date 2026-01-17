@@ -8,6 +8,7 @@ export interface UserData {
   roles: string[];
   iat?: number;
   exp?: number;
+  userGroup: string;
 }
 
 interface AuthContextType {

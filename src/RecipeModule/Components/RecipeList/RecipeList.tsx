@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import Confirmation from "../../../Shared/Confirmation/Confirmation";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../../../Shared/Pagination/Pagination";
+import { useAuth } from "../../../Context/AuthContext";
 
 interface ICategory {
   id: number;
@@ -37,7 +38,75 @@ export default function RecipeList() {
   const [Id, setId] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [favList, setFavList] = useState<number[]>([]);
+  const { userData } = useAuth();
   const pageSize = 10;
+
+  const getFavorites = async () => {
+    try {
+      const res = await axios.get(
+        `https://upskilling-egypt.com:3006/api/v1/userRecipe`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+      // Assuming the response returns an array of objects containing recipe details
+      const favIds = res.data.data.map((fav: any) => fav.recipe.id);
+      setFavList(favIds);
+    } catch (error) {
+      console.error("Error fetching favorites", error);
+    }
+  };
+
+  useEffect(() => {
+    if (userData?.userGroup === "SystemUser") {
+      getFavorites();
+    }
+  }, [userData]);
+
+  const addToFav = async (id: number) => {
+    try {
+      await axios.post(
+        `https://upskilling-egypt.com:3006/api/v1/userRecipe`,
+        { recipeId: id },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+      toast.success("Added to Favorites Successfully");
+      setFavList((prev) => [...prev, id]);
+      setShow(false);
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response && axiosError.response.data) {
+        toast.error((axiosError.response.data as { message: string }).message);
+      } else {
+        toast.error("An unknown error occurred during request.");
+      }
+    }
+  };
+
+  const removeFromFav = async (id: number) => {
+    try {
+      await axios.delete(
+        `https://upskilling-egypt.com:3006/api/v1/userRecipe/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      toast.success("Removed from Favorites Successfully");
+      setFavList((prev) => prev.filter((favId) => favId !== id));
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response && axiosError.response.data) {
+        toast.error((axiosError.response.data as { message: string }).message);
+      } else {
+        toast.error("An unknown error occurred during request.");
+      }
+    }
+  };
 
   const navigate = useNavigate();
 
@@ -125,14 +194,18 @@ export default function RecipeList() {
           <h4>Recipe Table Details</h4>
           <p>You can check all details</p>
         </div>
-        <div className="p-5">
-          <button
-            className="btn btn-success px-5"
-            onClick={() => navigate("/dashboard/recipes-data")}
-          >
-            Add new Item
-          </button>
-        </div>
+        {userData?.userGroup === "SystemUser" ? (
+          ""
+        ) : (
+          <div className="p-5">
+            <button
+              className="btn btn-success px-5"
+              onClick={() => navigate("/dashboard/recipes-data")}
+            >
+              Add new Item
+            </button>
+          </div>
+        )}
       </div>
       <table className="table">
         <thead>
@@ -143,7 +216,7 @@ export default function RecipeList() {
             <th scope="col">Description</th>
             <th scope="col">tag</th>
             <th scope="col">category</th>
-            <th scope="col"></th>
+            <th scope="col">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -170,20 +243,43 @@ export default function RecipeList() {
                 <td>{recipe.category?.map((cat) => cat.name).join(", ")}</td>
 
                 <td className="position-relative">
-                  <i
-                    className="fa-solid fa-ellipsis options-icon"
-                    onClick={() => toggleMenu(recipe.id)}
-                  ></i>
-                  {openMenuId === recipe.id && (
-                    <ul className="options-menu">
-                      <li>View</li>
-                      <li
-                        className="delete"
-                        onClick={() => handleOpenModal(recipe.id)}
-                      >
-                        Delete
-                      </li>
-                    </ul>
+                  {userData?.userGroup !== "SystemUser" ? (
+                    <>
+                      <i
+                        className="fa-solid fa-ellipsis options-icon"
+                        onClick={() => toggleMenu(recipe.id)}
+                      ></i>
+                      {openMenuId === recipe.id && (
+                        <ul className="options-menu">
+                          <li>View</li>
+                          <li
+                            className="delete"
+                            onClick={() => handleOpenModal(recipe.id)}
+                          >
+                            Delete
+                          </li>
+                        </ul>
+                      )}
+                    </>
+                  ) : (
+                    <i
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (favList.includes(recipe.id)) {
+                          removeFromFav(recipe.id);
+                        } else {
+                          addToFav(recipe.id);
+                        }
+                      }}
+                      className={
+                        favList.includes(recipe.id) ? "fa-solid fa-heart" : "fa-regular fa-heart"
+                      }
+                      style={{
+                        color: favList.includes(recipe.id) ? "red" : "inherit",
+                        cursor: "pointer",
+                      }}
+                      aria-hidden="true"
+                    ></i>
                   )}
                 </td>
               </tr>

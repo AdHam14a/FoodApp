@@ -16,6 +16,8 @@ import CategoriesList from "./CategoriesModule/Components/CategoriesList/Categor
 import UsersList from "./UsersModule/Components/UsersList/UsersList";
 import { ToastContainer } from "react-toastify";
 import ProtectedRoute from "./Shared/ProtectedRoute/ProtectedRoute";
+import Favorites from "./Favorites/Favorites";
+import ChangeExistingPass from "./Auth/ChangeExistingPass/ChangeExistingPass";
 
 function App() {
   const routes = createBrowserRouter([
@@ -48,6 +50,10 @@ function App() {
           path: "/verify",
           element: <VerifyAcc />,
         },
+        {
+          path: "/change-existing-pass",
+          element: <ChangeExistingPass />,
+        },
       ],
     },
     {
@@ -62,6 +68,7 @@ function App() {
         { index: true, element: <Dashboard /> },
         { path: "recipes", element: <RecipeList /> },
         { path: "recipes-data", element: <RecipeData /> },
+        { path: "favs", element: <Favorites /> },
         { path: "categories", element: <CategoriesList /> },
         { path: "users", element: <UsersList /> },
       ],

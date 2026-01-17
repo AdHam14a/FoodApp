@@ -24,7 +24,6 @@ export default function Register() {
     control,
     formState: { errors },
     handleSubmit,
-    reset,
   } = useForm<IRegisterForm>();
 
   const pass = useWatch({ control, name: "password" });
@@ -41,22 +40,14 @@ export default function Register() {
 
       await axios.post(
         "https://upskilling-egypt.com:3006/api/v1/Users/Register",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        formData
       );
       toast.success("Registration Successful");
-      reset();
-      navigate("/login");
+      navigate("/verify");
     } catch (error) {
       const axiosError = error as AxiosError;
       if (axiosError.response && axiosError.response.data) {
-        toast.error(
-          (axiosError.response.data as { message: string }).message
-        );
+        toast.error((axiosError.response.data as { message: string }).message);
       } else {
         toast.error("An unknown error occurred during registration.");
       }
@@ -82,12 +73,12 @@ export default function Register() {
                   required: "You must enter your username",
                 })}
               />
-              {errors.userName && (
-                <span className="text-danger small ms-1">
-                  {errors.userName.message}
-                </span>
-              )}
             </div>
+            {errors.userName && (
+              <span className="text-danger small ms-1">
+                {errors.userName.message}
+              </span>
+            )}
           </div>
 
           <div className="col-md-6">
@@ -106,12 +97,12 @@ export default function Register() {
                   },
                 })}
               />
-              {errors.email && (
-                <span className="text-danger small ms-1">
-                  {errors.email.message}
-                </span>
-              )}
             </div>
+            {errors.email && (
+              <span className="text-danger small ms-1">
+                {errors.email.message}
+              </span>
+            )}
           </div>
         </div>
 
@@ -121,19 +112,17 @@ export default function Register() {
               <input
                 type="text"
                 placeholder="Country"
-                className={`form-control border-0 bg-light py-3 px-3 shadow-none ${
-                  errors.country ? "is-invalid" : ""
-                }`}
+                className={`form-control border-0 bg-light py-3 px-3 shadow-none `}
                 {...register("country", {
                   required: "You must enter your country",
                 })}
               />
-              {errors.country && (
-                <span className="text-danger small ms-1">
-                  {errors.country.message}
-                </span>
-              )}
             </div>
+            {errors.country && (
+              <span className="text-danger small ms-1">
+                {errors.country.message}
+              </span>
+            )}
           </div>
 
           <div className="col-md-6">
@@ -148,12 +137,12 @@ export default function Register() {
                   required: "You must enter your phone number",
                 })}
               />
-              {errors.phoneNumber && (
-                <span className="text-danger small ms-1">
-                  {errors.phoneNumber.message}
-                </span>
-              )}
             </div>
+            {errors.phoneNumber && (
+              <span className="text-danger small ms-1">
+                {errors.phoneNumber.message}
+              </span>
+            )}
           </div>
         </div>
 
@@ -191,12 +180,12 @@ export default function Register() {
                   <i className="fa fa-eye" aria-hidden="true"></i>
                 )}
               </span>
-              {errors.password && (
-                <span className="text-danger small ms-1">
-                  {errors.password.message}
-                </span>
-              )}
             </div>
+            {errors.password && (
+              <span className="text-danger small ms-1">
+                {errors.password.message}
+              </span>
+            )}
           </div>
 
           <div className="col-md-6">
@@ -230,12 +219,12 @@ export default function Register() {
                   <i className="fa fa-eye" aria-hidden="true"></i>
                 )}
               </span>
-              {errors.confirmPassword && (
-                <span className="text-danger small ms-1">
-                  {errors.confirmPassword.message}
-                </span>
-              )}
             </div>
+            {errors.confirmPassword && (
+              <span className="text-danger small ms-1">
+                {errors.confirmPassword.message}
+              </span>
+            )}
           </div>
         </div>
 
