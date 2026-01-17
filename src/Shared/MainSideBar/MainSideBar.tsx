@@ -6,7 +6,7 @@ import recipes from "../../assets/columns-gap.png";
 import categories from "../../assets/categories.png";
 import changePassword from "../../assets/change-password.png";
 import loggedout from "../../assets/logout.png";
-import favs from "../../assets/fav.png";
+import favs from "../../assets/Fav.png";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
